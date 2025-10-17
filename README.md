@@ -332,7 +332,6 @@ These features were intentionally excluded to keep the assessment simple and tra
 ## 👤 Contact
 
 **Developer:** Aman Kumar Singh  
-**Roll Number:** 22B0321
 
 📧 **Email:** [amansingh65803@gmail.com](mailto:amansingh65803@gmail.com)  
 💼 **LinkedIn:** [aman-singh-55b1a1263](https://www.linkedin.com/in/aman-singh-55b1a1263)  
