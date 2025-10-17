@@ -64,31 +64,44 @@ A cloud-based AI/ML system that processes dance videos to detect 33 body landmar
 ### Local Setup
 
 Clone repository
+```bash
 git clone https://github.com/amansingh107/Dance_Movement_Analyzer.git
 cd dance-analyzer
+```
 
 Create virtual environment
+```bash
 python -m venv venv
-source venv/bin/activate # Windows: venv\Scripts\activate
+source venv/bin/activate 
+```
 
+Windows: 
+```bash
+venv\Scripts\activate
+```
 Install dependencies
+```bash
 pip install -r requirements.txt
+```
 
 Run server
+```bash
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-Verify: Open http://localhost:8000/docs
-
-**Verify:** Open http://localhost:8000/docs
+```
+**Verify:**  http://localhost:8000/docs
 
 ### Docker Deployment
 
 Using Docker Compose (recommended)
+```bash
 docker-compose up -d --build
-Or with Docker CLI:
+```
 
 Or Docker CLI
+```bash
 docker build -t dance-analyzer .
 docker run -d -p 8000:8000 --name dance-api dance-analyzer
+```
 
 ---
 
@@ -102,14 +115,19 @@ docker run -d -p 8000:8000 --name dance-api dance-analyzer
 
 #### 1. Health Check
 GET /health
+```bash
 curl http://localhost:8000/health
+```
 
 #### 2. Analyze Video
 POST /api/analyze
+```bash
 curl -X POST "http://localhost:8000/api/analyze"
 -F "video=@dance_video.mp4"
+```
 
 **Response:**
+```bash
 {
 "success": true,
 "job_id": "abc123-xyz",
@@ -119,15 +137,17 @@ curl -X POST "http://localhost:8000/api/analyze"
 "processing_time": "8.45s",
 "download_url": "/api/download/abc123-xyz"
 }
-
+```
 #### 3. Download Result
 GET /api/download/{job_id}
+```bash
 curl -o result.mp4 http://localhost:8000/api/download/abc123-xyz
-
+```
 #### 4. Manual Cleanup
 DELETE /api/cleanup/{job_id}
+```bash
 curl -X DELETE http://localhost:8000/api/cleanup/abc123-xyz
-
+```
 **Postman:** Use `POST /api/analyze` with `form-data`, key: `video` (File type).
 
 ---
@@ -136,24 +156,30 @@ curl -X DELETE http://localhost:8000/api/cleanup/abc123-xyz
 
 ### Render (Free Tier)
 
-**Why Render?** No AWS/GCP access due to credit card requirements. Docker-native, free HTTPS, auto-deploy on git push.
+**Why Render?** No AWS/GCP access. Docker-native, free HTTPS, auto-deploy on git push.
 
 **Deploy:**
 
 1. Add `render.yaml`:
+```bash
+# render.yaml
 services:
-
-type: web
-name: dance-movement-analyzer
-env: docker
-dockerfilePath: ./Dockerfile
-plan: free
-region: singapore
-healthCheckPath: /health
-envVars:
-
-key: PORT
-value: 8000
+  - type: web
+    name: dance-movement-analyzer
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    region: singapore  # or oregon, frankfurt
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: LOG_LEVEL
+        value: INFO
+      - key: MAX_UPLOAD_SIZE_MB
+        value: 50
+```
 
 2. Push to GitHub
 3. Render Dashboard → New Blueprint → Connect repo → Deploy
@@ -163,17 +189,29 @@ value: 8000
 ---
 
 ## 🧪 Testing
-
+**Note** Run below before running integration test
+```bash 
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
 Run all tests
+```bash
 pytest tests/ -v
-
+```
+Without integration test, no need to start server
+```bash
+pytest -v -m "not integration" --cov=app --cov-report=html
+```
 With coverage
+```bash
 pytest tests/ --cov=app --cov-report=html
+```
 
 Run specific tests
+```bash
 pytest tests/test_video_processor.py -v
+```
 
-**Coverage:** 85%+ (45 passed, 2 skipped)
+**Coverage:** 100% (45 tests passed)
 
 ---
 
@@ -230,21 +268,21 @@ pytest tests/test_video_processor.py -v
 
 ## 📁 Project Structure
 
-dance-analyzer/
-├── app/
-│ ├── main.py # FastAPI app & endpoints
-│ └── video_processor.py # MediaPipe/OpenCV processing
-├── tests/
-│ ├── test_video_processor.py
-│ ├── test_api.py
-│ └── test_integration.py
-├── uploads/ # Temp input storage
-├── outputs/ # Temp output storage
-├── Dockerfile
-├── docker-compose.yml
-├── render.yaml
-├── requirements.txt
-└── README.md
+dance-analyzer/<br>
+├── app/<br>
+│ ├── main.py # FastAPI app & endpoints<br>
+│ └── video_processor.py # MediaPipe/OpenCV processing<br>
+├── tests/<br>
+│ ├── test_video_processor.py<br>
+│ ├── test_api.py<br>
+│ └── test_integration.py<br>
+├── uploads/ # Temp input storage<br>
+├── outputs/ # Temp output storage<br>
+├── Dockerfile<br>
+├── docker-compose.yml<br>
+├── render.yaml<br>
+├── requirements.txt<br>
+└── README.md<br>
 
 ---
 
@@ -287,11 +325,7 @@ dance-analyzer/
 
 These features were intentionally excluded to keep the assessment simple and transparent. They can be implemented if the assignment requires not storing videos on VMs.
 
----
 
-## 📄 License
-
-MIT License - see [LICENSE](LICENSE) file.
 
 ---
 
