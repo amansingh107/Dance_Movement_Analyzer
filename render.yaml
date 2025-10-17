@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: dance-movement-analyzer
+    env: docker
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: LOG_LEVEL
+        value: INFO
