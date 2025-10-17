@@ -1,0 +1,19 @@
+# render.yaml
+services:
+  - type: web
+    name: dance-movement-analyzer
+    env: docker
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    region: singapore  # or oregon, frankfurt
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: LOG_LEVEL
+        value: INFO
+    disk:
+      name: video-storage
+      mountPath: /app/uploads
+      sizeGB: 1
